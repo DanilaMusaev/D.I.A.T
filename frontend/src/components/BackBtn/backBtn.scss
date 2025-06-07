@@ -1,0 +1,78 @@
+$bg-color: #6b6a71;
+$bg-color-hover: #932f27;
+
+.back-btn {
+    --bdr-color: #bdb7c2;
+    --bdr-color-hover: #cf4a2a;
+
+    position: relative;
+    padding: 6px 25px 8px 35px;
+
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+
+    border: 1px solid var(--bdr-color);
+    background: linear-gradient(
+            180deg,
+            rgba($bg-color, 0.05) 0%,
+            rgba(255, 255, 255, 0) 20.5%,
+            rgba(255, 255, 255, 0) 50%,
+            rgba(255, 255, 255, 0) 80%,
+            rgba($bg-color, 0.05) 100%
+        ),
+        linear-gradient(
+            270deg,
+            rgba($bg-color, 0.3) 0%,
+            rgba(255, 255, 255, 0.1) 5%,
+            rgba(255, 255, 255, 0) 50%,
+            rgba(255, 255, 255, 0.1) 95%,
+            rgba($bg-color, 0.3) 100%
+        );
+
+    transition: all 0.1s ease-in;
+
+    &:hover {
+        border: 1px solid var(--bdr-color-hover);
+        background: linear-gradient(
+                180deg,
+                rgba($bg-color-hover, 0.05) 0%,
+                rgba($bg-color-hover, 0) 20.5%,
+                rgba($bg-color-hover, 0) 50%,
+                rgba($bg-color-hover, 0) 80%,
+                rgba($bg-color-hover, 0.05) 100%
+            ),
+            linear-gradient(
+                270deg,
+                rgba($bg-color-hover, 0.3) 0%,
+                rgba($bg-color-hover, 0.1) 5%,
+                rgba($bg-color-hover, 0) 50%,
+                rgba($bg-color-hover, 0.1) 95%,
+                rgba($bg-color-hover, 0.3) 100%
+            );
+
+        .back-btn__arrow {
+            animation: arrow-move 0.4s ease-in;
+        }
+    }
+}
+
+.back-btn__arrow {
+    position: absolute;
+
+    top: 50%;
+    left: 11px;
+    transform: translateY(-50%);
+}
+
+@keyframes arrow-move {
+    0% {
+        left: 11px;
+    }
+    50% {
+        left: 8px;
+    }
+    100% {
+        left: 11px;
+    }
+}

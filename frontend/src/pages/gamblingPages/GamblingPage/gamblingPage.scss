@@ -1,0 +1,18 @@
+.gambling {
+    padding: 84px 0 0;
+}
+
+.gambling__inner {
+    font-family: 'Playfair Display', serif;
+}
+
+.gambling__title {
+    margin-bottom: 90px;
+    text-align: center;
+}
+
+.gambling__cards {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 40px;
+}

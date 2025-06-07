@@ -1,0 +1,31 @@
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import packsRouter from './src/routers/packs.routes.js';
+import { errorMiddleware } from './src/middlewares/error-middleware.js';
+// Включение переменных окружения
+dotenv.config();
+// Константы
+const PORT = process.env.PORT || 8000;
+// Инициализация экземпляра сервера express
+const app = express();
+// Middlewares
+app.use(cors());
+app.use(express.json());
+// Routes
+app.use('/api', packsRouter);
+// Middleware обработчика ошибок
+app.use(errorMiddleware);
+
+// Функция с запуском сервера
+const startServer = async () => {
+    try {
+        app.listen(PORT, () => {
+            console.log(`Server is listening on PORT: ${PORT}`);
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+startServer();

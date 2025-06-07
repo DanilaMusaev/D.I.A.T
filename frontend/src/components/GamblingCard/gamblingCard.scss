@@ -1,0 +1,66 @@
+.gambling-card {
+    width: 355px;
+    height: 420px;
+
+    cursor: pointer;
+
+    border-radius: 20px;
+    box-shadow: 0 11px 25px 0 rgba(0, 0, 0, 0.25);
+
+    transition: all 0.1s ease-out;
+
+    &:hover {
+        filter: contrast(130%);
+        box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+.gambling-card__name {
+    max-width: 355px;
+    padding: 74px 0;
+
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.gambling-card__withLines {
+    position: relative;
+    display: block;
+    font-size: 32px;
+    font-weight: 600;
+
+    &::before,
+    &::after {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+
+        content: '';
+        display: block;
+        width: 50px;
+        height: 3px;
+
+        background-color: #fff;
+    }
+
+    &::before {
+        left: 45px;
+    }
+
+    &::after {
+        right: 45px;
+    }
+}
+
+.gambling-card__mode {
+    display: block;
+    font-size: 90px;
+    font-weight: 600;
+}

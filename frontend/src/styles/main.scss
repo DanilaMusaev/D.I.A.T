@@ -1,0 +1,48 @@
+@import url(https://fonts.googleapis.com/css?family=Playfair+Display:regular,500,600,700,800,900,italic,500italic,600italic,700italic,800italic,900italic);
+
+:root {
+    --background-color-main: #171515;
+    --text-color-main: #fff;
+
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--text-color-main);
+
+    background-color: var(--background-color-main);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    width: 100%;
+    max-width: 1270px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.mainPage {
+    overflow: hidden;
+    height: calc(100vh - 100px);
+}
+
+.title-1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 78px;
+    font-weight: 400;
+    line-height: 100%;
+
+    &--small {
+        font-size: 68px;
+    }
+}
+
+.title-2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+    font-size: 50px;
+    color: #fff;
+}

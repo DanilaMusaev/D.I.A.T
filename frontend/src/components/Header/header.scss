@@ -1,0 +1,20 @@
+.header {
+    --header-bg-color: #680909;
+    --header-bg-trsp-col: #0c0304;
+
+    height: 100px;
+    background: linear-gradient(
+        90deg,
+        var(--header-bg-color) 0%,
+        var(--header-bg-trsp-col) 20%,
+        var(--header-bg-trsp-col) 50%,
+        var(--header-bg-trsp-col) 85%,
+        var(--header-bg-color) 100%
+    );
+}
+
+.header__inner {
+    display: flex;
+    align-items: center;
+    column-gap: 112px;
+}

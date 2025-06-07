@@ -1,0 +1,61 @@
+.tab {
+    --tab-text-color-inactive: #a2999c;
+    --tab-text-color-active: #fff;
+    --tab-bg-inactive: transparent;
+    --tab-bg-active: linear-gradient(180deg, #180809 0%, #4e0f10 100%);
+    --tab-line-active: linear-gradient(
+        90deg,
+        #e85253 0%,
+        #c77f82 50%,
+        #e85253 100%
+    );
+
+    position: relative;
+
+    width: 241px;
+    padding: 31px 0 29px;
+
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--tab-text-color-inactive);
+    text-transform: uppercase;
+    text-align: center;
+
+    background: var(--tab-bg-inactive);
+
+    transition: all 0.2s ease-in;
+
+    &::before {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+        content: '';
+        display: block;
+        width: 100%;
+        height: 4px;
+
+        background-color: transparent;
+
+        transition: all 0.2s ease-in;
+    }
+
+    &:hover {
+        background: var(--tab-bg-active);
+
+        filter: contrast(110%);
+
+        &::before {
+            background: var(--tab-line-active);
+        }
+    }
+
+    &.active {
+        background: var(--tab-bg-active);
+        color: var(--tab-text-color-active);
+
+        &::before {
+            background: var(--tab-line-active);
+        }
+    }
+}

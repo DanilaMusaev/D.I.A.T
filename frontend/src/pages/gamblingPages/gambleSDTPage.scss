@@ -1,0 +1,24 @@
+.gambling-solos {
+    padding: 60px 0 0;
+}
+
+.gambling-solos__inner {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.gambling-solos__back-btn {
+    position: absolute;
+    top: -15px;
+    left: 60px;
+}
+
+.gambling-solos__characters {
+    display: flex;
+    column-gap: 40px;
+    justify-content: center;
+    margin-bottom: 77px;
+}
