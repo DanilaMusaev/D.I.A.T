@@ -10,3 +10,10 @@ CREATE TABLE packs(
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE curr_rating(
+    id SERIAL PRIMARY KEY,
+    rating_pts INTEGER,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);

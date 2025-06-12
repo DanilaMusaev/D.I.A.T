@@ -44,6 +44,22 @@ class PacksRepository {
             console.log(err);
         }
     }
+
+    /**
+     * 
+     * @param {number} qty - количество открытых паков
+     * @param {number} user_id - id пользователя с этим количеством паков
+     * @returns {Promise<QueryResult>}
+     */
+    async createOne(qty, user_id) {
+        // Создание записи о количестве паков пользователя
+        const newRowPacks = await pool.query(
+            `INSERT INTO packs (quantity, user_id) values ($1, $2) RETURNING *`,
+            [qty, user_id]
+        );
+
+        return newRowPacks.rows[0];
+    }
 }
 
 export default new PacksRepository();
