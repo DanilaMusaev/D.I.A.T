@@ -5,6 +5,6 @@ import usersController from '../controllers/users.controller.js';
 const usersRouter = new Router();
 // Endpoints
 usersRouter.get('/users', usersController.getUserById);
-usersRouter.post('/users', usersController.createOne);
+usersRouter.post('/users/registration', usersController.registration);
 
 export default usersRouter;

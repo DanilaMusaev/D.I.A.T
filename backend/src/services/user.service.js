@@ -1,5 +1,6 @@
-import packsRepository from '../db/packsRepository.js';
-import usersRepository from '../db/usersRepository.js';
+import packsRepository from '../db/repositories/packsRepository.js';
+import ratingRepository from '../db/repositories/ratingRepository.js';
+import usersRepository from '../db/repositories/usersRepository.js';
 import { ApiError } from '../exceptions/api-error.js';
 
 class UsersService {
@@ -9,7 +10,7 @@ class UsersService {
      * @returns {Promise<QueryResult>}
      */
     async getUserById(user_id) {
-        // Вызов функции из мини-репозитория БД для получения количества паков от пользователя
+        // Вызов функции из мини-репозитория БД для получения данных пользователя
         const user = await usersRepository.getOne({ id: user_id });
 
         if (!user) {
@@ -21,9 +22,28 @@ class UsersService {
         return user;
     }
 
+    /**
+     * Метод для получения записи о пользователе в БД при логине.
+     * Пока что не доделано
+     * @param {string} email
+     * @returns {Promise<QueryResult>}
+     */
+    async login(email) {
+        // Вызов функции из мини-репозитория БД для получения количества паков от пользователя
+        const user = await usersRepository.getOne({ email });
+
+        if (!user) {
+            throw ApiError.BadRequest(
+                `Пользователя с таким email: ${email} не существует`
+            );
+        }
+
+        return user;
+    }
+
     async createUser(email, password) {
         // Проверим, что еще нет пользователей с таким же email
-        const user = await usersRepository.getOne({email});
+        const user = await usersRepository.getOne({ email });
         if (user) {
             throw ApiError.BadRequest(
                 `Пользователь с таким email уже существует`
@@ -34,7 +54,9 @@ class UsersService {
         console.log(newUser);
         // Вместе с созданием нового пользователя, создаем ему и запись в БД с его количеством паков, равной 0 по умолчанию
         const newPacksRow = await packsRepository.createOne(0, newUser.id);
-        
+        // Также создаем запись о количестве текущего рейтинга пользователя, по умолчанию 0
+        const newRatingRow = await ratingRepository.create(0, newUser.id);
+
         return newUser;
     }
 }

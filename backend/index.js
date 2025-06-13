@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import packsRouter from './src/routers/packs.routes.js';
 import { errorMiddleware } from './src/middlewares/error-middleware.js';
 import usersRouter from './src/routers/users.routes.js';
+import packsRouter from './src/routers/packs.routes.js';
+import ratingRouter from './src/routers/rating.routes.js';
 // Включение переменных окружения
 dotenv.config();
 // Константы
@@ -16,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use('/api', packsRouter);
 app.use('/api', usersRouter);
+app.use('/api', ratingRouter);
 // Middleware обработчика ошибок
 app.use(errorMiddleware);
 

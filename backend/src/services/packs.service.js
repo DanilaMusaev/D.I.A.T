@@ -1,10 +1,10 @@
-import packsRepository from '../db/packsRepository.js';
+import packsRepository from '../db/repositories/packsRepository.js';
 import { ApiError } from '../exceptions/api-error.js';
 
 class PacksService {
     async getPacksQTY(user_id) {
         // Вызов функции из мини-репозитория БД для получения количества паков от пользователя
-        const packsQTY = await packsRepository.getOneById({ user_id });
+        const packsQTY = await packsRepository.getOne({ user_id });
         // Проверка на существование записи о пользователе
         if (!packsQTY) {
             throw ApiError.BadRequest(
@@ -17,13 +17,17 @@ class PacksService {
         // Получаем уже имеющееся количество паков
         const beforeQTY = await packsRepository.getOne({ user_id });
         // Проверка на то, что данные есть
-        // if (!beforeQTY) {
-        //     throw ApiError.BadRequest(
-        //         `Пользователя с таким id: ${user_id} не существует`
-        //     );
-        // }
+        if (!beforeQTY) {
+            throw ApiError.BadRequest(
+                `Пользователя с таким id: ${user_id} не существует`
+            );
+        }
         // Новое количество паков
-        const newQTYpacks = Number(beforeQTY?.quantity) + Number(newQty);
+        let newQTYpacks = Number(beforeQTY?.quantity) + Number(newQty);
+        // Проверка на то, чтобы количество открытых паков не стало отрицательным
+        if (newPacksQTY < 0) {
+            newQTYpacks = 0;
+        }
         // Обновление кол-ва паков в БД
         const newPacksQTY = await packsRepository.updateOne(newQTYpacks, {
             user_id,

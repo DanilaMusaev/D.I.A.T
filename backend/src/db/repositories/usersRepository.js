@@ -1,10 +1,10 @@
-import pool from './db.js';
+import pool from '../db.js';
 
 class UsersRepository {
     /**
      *
      * @param {{field: any}} where  - Условие для запроса в БД
-     * @returns QueryResult<any>.rows[0]
+     * @returns {Promise<QueryResult<any>.rows[0]>}
      */
     async getOne(where) {
         try {

@@ -21,7 +21,7 @@ class UsersController {
         }
     }
 
-    async createOne(req, res, next) {
+    async registration(req, res, next) {
         try {
             // Получаем данные из тела запроса
             const { email, password } = req.body;
