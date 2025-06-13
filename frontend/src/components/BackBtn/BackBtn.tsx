@@ -1,6 +1,6 @@
 import arrowLeft from '../../assets/img/icons/arrow-left.svg';
 import { useNavigate } from 'react-router';
-import { AppRoutes } from '../../routes/consts';
+import { LinkRoutes } from '../../routes/consts';
 import './backBtn.scss';
 
 /**
@@ -11,7 +11,7 @@ function BackBtn() {
 
     return (
         <button
-            onClick={() => navigate(AppRoutes.GAMBLING_ROUTE)}
+            onClick={() => navigate(LinkRoutes.GAMBLING_ROUTE_LINK)}
             className="back-btn"
         >
             <img className="back-btn__arrow" src={arrowLeft} alt="" />

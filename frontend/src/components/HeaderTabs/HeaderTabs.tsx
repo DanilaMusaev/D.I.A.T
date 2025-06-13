@@ -1,4 +1,4 @@
-import { AppRoutes } from '../../routes/consts';
+import { LinkRoutes } from '../../routes/consts';
 import TabBtn from '../TabBtn/TabBtn';
 import './headerTabs.scss';
 
@@ -8,9 +8,9 @@ import './headerTabs.scss';
 function HeaderTabs() {
     return (
         <nav className="nav_tabs">
-            <TabBtn linkPath={AppRoutes.GAMBLING_ROUTE}>Gambling</TabBtn>
-            <TabBtn linkPath={AppRoutes.PACKS_ROUTE}>Packs</TabBtn>
-            <TabBtn linkPath={AppRoutes.RATING_ROUTE}>Rating</TabBtn>
+            <TabBtn linkPath={LinkRoutes.GAMBLING_ROUTE_LINK}>Gambling</TabBtn>
+            <TabBtn linkPath={LinkRoutes.PACKS_ROUTE_LINK}>Packs</TabBtn>
+            <TabBtn linkPath={LinkRoutes.RATING_DAILY_LINK}>Rating</TabBtn>
         </nav>
     );
 }
