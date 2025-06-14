@@ -1,58 +1,43 @@
 import { useState, useEffect, type ChangeEvent, type MouseEvent } from 'react';
+import { useRatingStore } from '../../../state/rating';
 import { RANK_BUDGES_OBJ } from '../../../data/rankedBudges';
-import { calcPlayerStats } from '../../../utils/calculateStats/calcStats';
-import type { PlayerStats } from '../../../utils/calculateStats/types';
-import './rankedDaily.scss';
 import { getRankBudget } from '../../../helpers/getRankBudge';
-import { createInitialStats } from '../../../utils/calculateStats/someUtils';
-import RatingService from '../../../api/RatingService';
+import './rankedDaily.scss';
 
 function RankedDaily() {
-    const [currentRP, setCurrentRP] = useState(0);
-    const [matchesQTY, setMatchesQTY] = useState<number[]>([0, 0]);
-    const [ernLostRP, setErnLostRP] = useState(0);
-    const [playerStats, setPlayerStats] = useState<PlayerStats>(
-        createInitialStats()
+    // Из state берутся необходимые поля
+    const currentRP = useRatingStore((state) => state.currentRP);
+    const matchesQTY = useRatingStore((state) => state.matchesQTY);
+    const ernLostRP = useRatingStore((state) => state.ernLostRP);
+    const playerStats = useRatingStore((state) => state.playerStats);
+    // А также нужные actions
+    const getCurrentRating = useRatingStore((state) => state.getCurrentRating);
+    const updateCurrentRating = useRatingStore(
+        (state) => state.updateCurrentRating
     );
+    // Управляемое состояние для поля ввода
     const [inputRP, setInputRP] = useState<string>('');
 
     function handleClick(event: MouseEvent<HTMLButtonElement>) {
+        // Отмена стандартного поведения
         event.preventDefault();
-        console.log(RatingService.getCurrentRating(1));
-        // const inputValue = Number(inputRP.current.value) + Number(currentRP);
-        // setMatchesQTY((currArr) => {
-        //     return [currArr[0] + 1, currArr[1] + 1];
-        // });
-        // const data = {
-        //     currRP: inputValue,
-        //     totalMatches: Number(matchesQTY[1] + 1),
-        // };
-        // const requestOptions = {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data),
-        // };
-        // fetch('http://localhost:8000/api/update_rankedRP', requestOptions).then(
-        //     () => console.log('RP was rewrite')
-        // );
-        // setCurrentRP(inputValue);
-        // setPlayerStats(calcPlayerStats(inputValue));
-        // setErnLostRP(
-        //     (current) => Number(current) + Number(inputRP.current.value)
-        // );
+        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
+        const userId = 1;
+        // Запрос на обновление рейтинга на сервере
+        updateCurrentRating(Number(inputRP), userId)
+            .then(() => {
+                setInputRP('');
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     useEffect(() => {
-        // fetch('http://localhost:8000/api/ranked-rp')
-        //     .then((res) => res.json())
-        //     .then((result) => {
-        //         setCurrentRP(result.currRP);
-        //         setPlayerStats(calcPlayerStats(result.currRP));
-        //         setMatchesQTY((currArr) => {
-        //             return [currArr[0], result.totalMatches];
-        //         });
-        //         console.log(result);
-        //     });
+        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
+        const userId = 1;
+        // Отправка запроса на получение количества паков
+        getCurrentRating(userId);
     }, []);
 
     return (
