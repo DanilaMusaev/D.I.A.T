@@ -51,7 +51,6 @@ class UsersService {
         }
         // Создание нового пользователя
         const newUser = await usersRepository.create(email, password);
-        console.log(newUser);
         // Вместе с созданием нового пользователя, создаем ему и запись в БД с его количеством паков, равной 0 по умолчанию
         const newPacksRow = await packsRepository.createOne(0, newUser.id);
         // Также создаем запись о количестве текущего рейтинга пользователя, по умолчанию 0
