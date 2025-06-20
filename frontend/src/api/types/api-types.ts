@@ -30,7 +30,26 @@ export interface CurrentRatingBody {
  * Возвращаемый с сервера тип с информацией о текущем рейтинге
  */
 export interface CurrentRatingType {
+    current_rating: number;
+    today_total: string;
+    today_matches_count: string;
+}
+
+/**
+ * Возвращаемый с сервера тип, после обновления информации
+ */
+export interface UpdatedRatingType {
     id: number;
     rating_pts: number;
     user_id: number;
+}
+
+export interface MonthRatingFromApi {
+    dayfrom: string;
+    ptsearned: string;
+}
+
+export interface MonthRatingType {
+    dayFrom: string;
+    ptsEarned: number;
 }

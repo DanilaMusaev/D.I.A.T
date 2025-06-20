@@ -1,0 +1,67 @@
+.ranked-month {
+    padding: 40px 0 0;
+}
+
+.ranked-month__title {
+    margin-bottom: 65px;
+    text-align: center;
+}
+
+.ranked-month__stats-table {
+    position: relative;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    column-gap: 10px;
+}
+
+.ranked-month__stat-points {
+    display: grid;
+    row-gap: 19px;
+
+    font-weight: 500;
+    font-size: 18px;
+    text-align: right;
+}
+
+.ranked-month__stat-lines {
+    display: grid;
+    row-gap: 20px;
+}
+
+.ranked-month__stat-line {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1px;
+
+        background-color: #adadad;
+    }
+
+    &--wide {
+        &::before {
+            height: 3px;
+        }
+    }
+}
+
+.ranked-month__stat-gotPTS {
+    position: absolute;
+    left: 65px;
+    bottom: 15px;
+
+    padding: 0px 10px;
+
+    width: calc(100% - 60px);
+
+    display: flex;
+    align-items: flex-end;
+    gap: 23px;
+}

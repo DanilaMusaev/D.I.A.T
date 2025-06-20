@@ -1,0 +1,39 @@
+.ranked-month__stat-gotPTS-daily {
+    position: relative;
+}
+
+.ranked-month__stat-gotPTS-daily-RP {
+    position: absolute;
+    width: 50px;
+    top: -17px;
+    left: -10px;
+    font-weight: 500;
+    font-size: 12px;
+
+    span {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #e85253;
+    }
+}
+
+.ranked-month__stat-gotPTS-daily-rectangle {
+    width: 15px;
+
+    border-left: 1px solid #9fa4b4;
+    border-right: 1px solid #9fa4b4;
+    border-top: 1px solid #9fa4b4;
+    border-radius: 5px 5px 0 0;
+    background-color: #680909;
+}
+
+.ranked-month__stat-gotPTS-daily-date {
+    position: absolute;
+    left: -15px;
+    bottom: -33px;
+
+    font-weight: 400;
+    font-size: 14px;
+
+    transform: rotate(-50deg);
+}

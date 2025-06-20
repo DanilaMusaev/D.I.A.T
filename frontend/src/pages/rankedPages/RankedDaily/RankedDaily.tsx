@@ -144,7 +144,7 @@ function RankedDaily() {
                         Matches played this session:
                     </h4>
                     <div className="ranked-daily__session-stats">
-                        {matchesQTY[0]}
+                        {matchesQTY}
                         <span>Matches</span>
                     </div>
                 </div>
