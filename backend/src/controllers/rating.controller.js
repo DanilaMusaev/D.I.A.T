@@ -13,7 +13,7 @@ class RatingController {
                 );
             }
             // Вызов функции сервиса для получения текущего рейтинга
-            const rating = await ratingService.getRatingById(userId);
+            const rating = await ratingService.getCurrTodayProg(userId);
 
             return res.json(rating);
         } catch (err) {
@@ -42,6 +42,27 @@ class RatingController {
             );
 
             return res.json(newRating);
+        } catch (err) {
+            console.log(err);
+            // Вызываем функцию next() для того, чтобы сработал middleware обработчика ошибок
+            next(err);
+        }
+    }
+
+    async getMonthProgress(req, res, next) {
+        try {
+            // Получаем данные из тела запроса
+            const { userId } = req.query;
+            // Небольшая проверка
+            if (!userId) {
+                return next(
+                    ApiError.BadRequest(`Query параметры должны быть в запросе`)
+                );
+            }
+            // Получаем данные
+            const monthProg = await ratingService.getMonthProg(userId);
+            // Отправка данных на клиент
+            return res.json(monthProg);
         } catch (err) {
             console.log(err);
             // Вызываем функцию next() для того, чтобы сработал middleware обработчика ошибок

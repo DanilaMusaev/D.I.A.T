@@ -1,29 +1,41 @@
 import pool from '../db.js';
+import { validateWhere } from '../validators/where-validator.js';
 
 class RatingRepository {
+    constructor() {
+        this.allowedColumns = ['id', 'user_id'];
+    }
     /**
-     *
+     * Получить текущий рейтинг пользователя
      * @param {{[key: string]: any}} where
      * @returns {Promise<QueryResult<any>>}
      */
     async getOne(where) {
+        // Валидация
+        const [whereKey, whereValue] = validateWhere(
+            where,
+            this.allowedColumns
+        );
+
         try {
             // Запрос в БД для получения строки с информацией о пользователе
             const rating = await pool.query(
-                `SELECT * FROM curr_rating ${
-                    where ? `WHERE ${Object.keys(where)[0]} = $1` : ''
-                }`,
-                [where[Object.keys(where)[0]]]
+                `SELECT * FROM curr_rating WHERE ${whereKey} = $1`,
+                [whereValue]
             );
 
             return rating.rows[0];
         } catch (err) {
-            console.log(err);
+            console.error(
+                `DB Error in  ${this.constructor.name}.getOne:`,
+                err.message
+            );
+            throw new Error('Failed to fetch rating');
         }
     }
 
     /**
-     *
+     * Создать новую запись с текущим рейтингом для пользователя
      * @param {number} pts - кол-во поинтов нового пользователя
      * @param {number} user_id - ссылка на id этого пользователя
      *
@@ -32,35 +44,194 @@ class RatingRepository {
     async create(pts, user_id) {
         try {
             const newRatingRow = await pool.query(
-                `INSERT INTO curr_rating (rating_pts, user_id) values ($1, $2) RETURNING *`,
+                `INSERT INTO curr_rating (rating_pts, user_id) 
+                values ($1, $2) RETURNING *`,
                 [pts, user_id]
             );
 
             return newRatingRow.rows[0];
         } catch (err) {
-            console.log(err);
+            if (err.code === '23505') {
+                throw new Error('User rating already exists');
+            }
+            throw err;
         }
     }
 
     /**
-     *
+     * Обновить текущий рейтинг пользователя
      * @param {number} pts
      * @param {{field: any}} where
-     * @returns QueryResult<any>.rows[0]
+     * @returns {QueryResult<any>.rows[0]}
      */
     async updateOne(pts, where) {
+        const [whereKey, whereValue] = validateWhere(
+            where,
+            this.allowedColumns
+        );
+
         try {
             // Обновление количества паков в БД
             const updatedPTS = await pool.query(
-                `UPDATE curr_rating SET rating_pts = $1 ${
-                    where ? `WHERE ${Object.keys(where)[0]} = $2` : ''
-                } RETURNING *`,
-                [pts, where[Object.keys(where)[0]]]
+                `UPDATE curr_rating SET rating_pts = $1 WHERE ${whereKey} = $2 RETURNING *`,
+                [pts, whereValue]
             );
 
             return updatedPTS.rows[0];
         } catch (err) {
-            console.log(err);
+            console.error(
+                `DB Error in  ${this.constructor.name}.updateOne:`,
+                err.message
+            );
+            throw new Error('Failed to fetch rating');
+        }
+    }
+
+    /**
+     * Получить количество рейтинга за текущую сессию
+     * @param {{[key in string]: any}} where
+     * @returns {Promise<QueryResult.rows[0]>}
+     * @deprecated - Есть функция с JOIN, которая совмещает данные с двух таблиц
+     */
+    async getTodayProgress(where) {
+        // Чтобы объект с where не был пустым
+        const [whereKey, whereValue] = validateWhere(
+            where,
+            this.allowedColumns
+        );
+
+        try {
+            const todayPTS = await pool.query(
+                `SELECT COALESCE(SUM(ptsEarned), 0) as total,
+                COALESCE(COUNT(ptsEarned), 0) as matchesCount
+                FROM rating_month 
+                WHERE ${whereKey} = $1 AND dayFrom = CURRENT_DATE`,
+                [whereValue]
+            );
+
+            return todayPTS.rows[0];
+        } catch (err) {
+            console.error(
+                `DB Error in ${this.constructor.name}.getTodayProgress:`,
+                err
+            );
+            throw new Error('Failed to fetch daily points');
+        }
+    }
+
+    /**
+     * Вместо того, чтобы делать два запроса getOne и getTodayProgress, объединим это в один запрос
+     * @param {{[key in string]: any}} where
+     *
+     * @returns {Promise<QueryResult.rows[0]>}
+     */
+    async getCurrAndTodayProg(where) {
+        // Валидация
+        const [whereKey, whereValue] = validateWhere(
+            where,
+            this.allowedColumns
+        );
+
+        // Запрос
+        try {
+            const currTodayProg = await pool.query(
+                `SELECT 
+                    cr.rating_pts AS current_rating,
+                    COALESCE(SUM(rm.ptsEarned), 0) AS today_total,
+                    COUNT(rm.ptsEarned) AS today_matches_count
+                FROM curr_rating cr
+                LEFT JOIN 
+                    rating_month rm ON cr.${whereKey} = rm.${whereKey} 
+                    AND rm.dayFrom = CURRENT_DATE
+                WHERE cr.${whereKey} = $1
+                GROUP BY cr.rating_pts`,
+                [whereValue]
+            );
+
+            return (
+                currTodayProg.rows[0] || {
+                    current_rating: 0,
+                    today_total: 0,
+                    today_matches_count: 0,
+                }
+            );
+        } catch (err) {
+            console.error(
+                `DB Error in ${this.constructor.name}.getCurrAndTodayProg:`,
+                err
+            );
+            throw new Error('Failed to fetch curr-daily progress');
+        }
+    }
+
+    /**
+     * Запрос на создание новой записи о матче
+     * @param {number} ptsEarned
+     * @param {number} user_id
+     * @returns {Promise<QueryResult.rows[0]>}
+     */
+    async createNewMatchRow(ptsEarned, user_id) {
+        try {
+            const newRatingMonthRow = await pool.query(
+                `INSERT INTO rating_month (ptsEarned, dayFrom ,user_id) 
+                values ($1, CURRENT_DATE, $2) RETURNING *`,
+                [ptsEarned, user_id]
+            );
+
+            return newRatingMonthRow.rows[0];
+        } catch (err) {
+            console.error(
+                `DB Error in ${this.constructor.name}.createNewMatchRow:`,
+                err
+            );
+            throw new Error('Failed to create new month-row match');
+        }
+    }
+
+    /**
+     * Запрос на получение количества заработанных pts за последние 30 дней
+     * @param {{[key in string]: any}} where
+     * @returns {Promise<QueryResult.rows[0]>}
+     */
+    async getMonthDailyProgress(where) {
+        // Валидация
+        const [whereKey, whereValue] = validateWhere(
+            where,
+            this.allowedColumns
+        );
+
+        // Запрос
+        try {
+            const monthProg = await pool.query(
+                `WITH date_series AS (
+                        SELECT 
+                            generate_series(
+                                CURRENT_DATE - INTERVAL '29 days',
+                                CURRENT_DATE,
+                                INTERVAL '1 day'
+                            )::date AS day
+                    )
+                    SELECT 
+                        ds.day AS dayFrom,
+                        COALESCE(SUM(rm.ptsEarned), 0) AS ptsEarned
+                    FROM 
+                        date_series ds
+                    LEFT JOIN 
+                        rating_month rm ON ds.day = rm.dayFrom AND rm.${whereKey} = $1
+                    GROUP BY 
+                        ds.day
+                    ORDER BY 
+                        ds.day ASC`,
+                [whereValue]
+            );
+
+            return monthProg.rows;
+        } catch (err) {
+            console.error(
+                `DB Error in ${this.constructor.name}.getMonthDailyProgress:`,
+                err
+            );
+            throw new Error('Failed to fetch month progress');
         }
     }
 }

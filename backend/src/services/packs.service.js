@@ -9,7 +9,7 @@ class PacksService {
         if (!packsQTY) {
             throw ApiError.BadRequest(
                 `У пользователя с id: ${user_id} еще нет записи о количестве паков`
-            )
+            );
         }
         return packsQTY;
     }
@@ -25,7 +25,7 @@ class PacksService {
         // Новое количество паков
         let newQTYpacks = Number(beforeQTY?.quantity) + Number(newQty);
         // Проверка на то, чтобы количество открытых паков не стало отрицательным
-        if (newPacksQTY < 0) {
+        if (newQTYpacks < 0) {
             newQTYpacks = 0;
         }
         // Обновление кол-ва паков в БД
