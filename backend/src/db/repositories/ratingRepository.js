@@ -191,7 +191,7 @@ class RatingRepository {
     /**
      * Запрос на получение количества заработанных pts за последние 30 дней
      * @param {{[key in string]: any}} where
-     * @returns {Promise<QueryResult.rows[0]>}
+     * @returns {Promise<QueryResult.rows>}
      */
     async getMonthDailyProgress(where) {
         // Валидация
@@ -229,6 +229,52 @@ class RatingRepository {
         } catch (err) {
             console.error(
                 `DB Error in ${this.constructor.name}.getMonthDailyProgress:`,
+                err
+            );
+            throw new Error('Failed to fetch month progress');
+        }
+    }
+
+    /**
+     *
+     * @param {{[k: string]: string | number}} where
+     * @returns {Promise<QueryResult.rows[0]>}
+     */
+    async getSeasonStats(where) {
+        // Валидация
+        const [whereKey, whereValue] = validateWhere(
+            where,
+            this.allowedColumns
+        );
+
+        try {
+            const seasonProgress = await pool.query(
+                `
+                WITH dates AS (
+                    SELECT 
+                        CURRENT_DATE - INTERVAL '90 days' AS season_start,
+                        CURRENT_DATE - INTERVAL '45 days' AS mid_season
+                )
+                SELECT
+                    COUNT(*) FILTER (WHERE ptsEarned < 0) AS negative_count,
+                    COUNT(*) FILTER (WHERE ptsEarned > 0) AS positive_count,
+                    
+                    COALESCE(SUM(ptsEarned) FILTER (WHERE dayFrom < d.mid_season), 0) AS first_half_sum,
+                    COALESCE(SUM(ptsEarned) FILTER (WHERE dayFrom >= d.mid_season), 0) AS second_half_sum
+                FROM 
+                    rating_month,
+                    dates d
+                WHERE 
+                    ${whereKey} = $1
+                    AND dayFrom >= d.season_start
+                `,
+                [whereValue]
+            );
+
+            return seasonProgress.rows[0];
+        } catch (err) {
+            console.error(
+                `DB Error in ${this.constructor.name}.getSeasonsStats:`,
                 err
             );
             throw new Error('Failed to fetch month progress');

@@ -130,6 +130,19 @@ class RatingService {
 
         return monthProg;
     }
+
+    async getSeasonProg(user_id) {
+        // Валидация
+        try {
+            user_id = Number(user_id);
+        } catch (err) {
+            throw ApiError.BadRequest(`id пользователя должен быть числом`);
+        }
+        // Запрос
+        const seasonProg = await ratingRepository.getSeasonStats({ user_id });
+
+        return seasonProg;
+    }
 }
 
 export default new RatingService();

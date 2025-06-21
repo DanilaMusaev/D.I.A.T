@@ -8,10 +8,33 @@ class UsersController {
             const { userId } = req.query;
             // Проверка на наличие query в запросе
             if (!userId) {
-                return next(ApiError.BadRequest('Query параметры должны быть в запросе'));
+                return next(
+                    ApiError.BadRequest('Query параметры должны быть в запросе')
+                );
             }
             // Вызов функции сервиса для получения количества открытых паков данного пользователя
             const user = await userService.getUserById(userId);
+
+            return res.json(user);
+        } catch (err) {
+            console.log(err);
+            // Вызываем функцию next() для того, чтобы сработал middleware обработчика ошибок
+            next(err);
+        }
+    }
+
+    async login(req, res, next) {
+        try {
+            // Получаем данные из тела запроса
+            const { email, password } = req.body;
+            // Небольшая валидация
+            if (!email || !password) {
+                return next(
+                    ApiError.BadRequest('Нет указаны email или пароль')
+                );
+            }
+            // Пытаемся залогиниться
+            const user = await userService.loginUser(email, password);
 
             return res.json(user);
         } catch (err) {

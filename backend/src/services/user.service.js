@@ -12,8 +12,10 @@ class UsersService {
      */
     async getUserById(user_id) {
         // Валидация
-        if (!Number.isInteger(user_id)) {
-            throw ApiError.BadRequest(`ID пользователя должен быть числом`);
+        try {
+            user_id = Number(user_id);
+        } catch {
+            throw ApiError.BadRequest(`id пользователя должен быть числом`);
         }
         // Вызов функции из мини-репозитория БД для получения данных пользователя
         const user = await usersRepository.getOne({ id: user_id });
@@ -33,20 +35,26 @@ class UsersService {
      * @param {string} email
      * @returns {Promise<QueryResult>}
      */
-    async login(email) {
+    async loginUser(email, password) {
         // Валидация email
         if (!validateEmail(email)) {
-            throw new ApiError.BadRequest(
+            throw ApiError.BadRequest(
                 `Указанный email не является валидным`,
                 [{ email: 'email is not valid' }]
             );
         }
-        // Вызов функции из мини-репозитория БД для получения количества паков от пользователя
+        // Вызов функции из мини-репозитория БД для получения пользователя
         const user = await usersRepository.getOne({ email });
 
         if (!user) {
             throw ApiError.BadRequest(
                 `Пользователя с таким email: ${email} не существует`
+            );
+        }
+        // Проверка на совпадение паролей (Пока что пароли без hash, просто строка)
+        if (user.password !== password) {
+            throw ApiError.BadRequest(
+                `Email или пароль неверные`
             );
         }
 
@@ -56,7 +64,7 @@ class UsersService {
     async createUser(email, password) {
         // Валидация email
         if (!validateEmail(email)) {
-            throw new ApiError.BadRequest(
+            throw ApiError.BadRequest(
                 `Указанный email не является валидным`,
                 [{ email: 'email is not valid' }]
             );

@@ -69,6 +69,27 @@ class RatingController {
             next(err);
         }
     }
+
+    async getSeasonProgress(req, res, next) {
+        try {
+            // Получаем данные из тела запроса
+            const { userId } = req.query;
+            // Небольшая проверка
+            if (!userId) {
+                return next(
+                    ApiError.BadRequest(`Query параметры должны быть в запросе`)
+                );
+            }
+            // Получаем данные
+            const seasonProg = await ratingService.getSeasonProg(userId);
+            // Отправка данных на клиент
+            return res.json(seasonProg);
+        } catch (err) {
+            console.log(err);
+            // Вызываем функцию next() для того, чтобы сработал middleware обработчика ошибок
+            next(err);
+        }
+    }
 }
 
 export default new RatingController();
