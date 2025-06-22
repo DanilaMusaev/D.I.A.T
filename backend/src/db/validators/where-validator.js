@@ -1,32 +1,12 @@
 /**
  * Валидирует условия WHERE для SQL-запросов
  * @param {object} where Объект условий { field: value }
- * @param {string[]} allowedColumns Допустимые поля для фильтрации
+ * @param {string[]} allowedColumns Допустимые поля для фильтрации полей where
+ * @param {boolean} [isWhereRequired=true] Поле, показывающее необходимость where поля доя запроса
  * @returns {[string, any]} [поле, значение]
  * @throws {Error} Если валидация не пройдена
  */
-export function validateWhere(where, allowedColumns) {
-    if (!where || Object.keys(where).length === 0) {
-        throw new Error('WHERE condition is required');
-    }
-
-    const [key, value] = Object.entries(where)[0];
-
-    if (typeof value === 'undefined' || value === null) {
-        throw new Error(`Value for column "${key}" cannot be null/undefined`);
-    }
-
-    if (!allowedColumns.includes(key)) {
-        throw new Error(
-            `Invalid column: ${key}. Allowed: ${allowedColumns.join(', ')}`
-        );
-    }
-
-    return [key, value];
-}
-
-/**     !!!! Возможное будущее улучшение для приема и валидации сразу многих WHERE параметров
-function validateWhere(where, allowedColumns, isWhereRequired = true) {
+export function validateWhere(where, allowedColumns, isWhereRequired = true) {
     if (!where || Object.keys(where).length === 0) {
         if (isWhereRequired) throw new Error('WHERE condition is required');
         return [];
@@ -44,7 +24,7 @@ function validateWhere(where, allowedColumns, isWhereRequired = true) {
         return [key, value];
     });
 }
-*/
+
 
 /**
  * Конвертирует валидированные WHERE-условия в SQL с правильной нумерацией параметров (Пока что имеет только AND, IN операторы)

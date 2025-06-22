@@ -1,5 +1,8 @@
 import pool from '../db.js';
-import { validateWhere } from '../validators/where-validator.js';
+import {
+    convertWhereToPGQuery,
+    validateWhere,
+} from '../validators/where-validator.js';
 
 class RatingRepository {
     constructor() {
@@ -11,17 +14,15 @@ class RatingRepository {
      * @returns {Promise<QueryResult<any>>}
      */
     async getOne(where) {
-        // Валидация
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         try {
             // Запрос в БД для получения строки с информацией о пользователе
             const rating = await pool.query(
-                `SELECT * FROM curr_rating WHERE ${whereKey} = $1`,
-                [whereValue]
+                `SELECT * FROM curr_rating ${sql ? `WHERE ${sql}` : ``}`,
+                params
             );
 
             return rating.rows[0];
@@ -42,11 +43,18 @@ class RatingRepository {
      * @returns {Promise<QueryResult>}
      */
     async create(pts, user_id) {
+        // Даже если where нет, для приведения всего к общему виду формирования запросов
+        const validWhere = validateWhere({}, this.allowedColumns, false);
+        const { sql, params } = convertWhereToPGQuery(validWhere, [
+            pts,
+            user_id,
+        ]);
+
         try {
             const newRatingRow = await pool.query(
                 `INSERT INTO curr_rating (rating_pts, user_id) 
-                values ($1, $2) RETURNING *`,
-                [pts, user_id]
+                values ($1, $2) ${sql ? `WHERE ${sql}` : ``} RETURNING *`,
+                params
             );
 
             return newRatingRow.rows[0];
@@ -65,16 +73,17 @@ class RatingRepository {
      * @returns {QueryResult<any>.rows[0]}
      */
     async updateOne(pts, where) {
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere, [pts]);
 
         try {
             // Обновление количества паков в БД
             const updatedPTS = await pool.query(
-                `UPDATE curr_rating SET rating_pts = $1 WHERE ${whereKey} = $2 RETURNING *`,
-                [pts, whereValue]
+                `UPDATE curr_rating SET rating_pts = $1 ${
+                    sql ? `WHERE ${sql}` : ``
+                } RETURNING *`,
+                params
             );
 
             return updatedPTS.rows[0];
@@ -94,19 +103,17 @@ class RatingRepository {
      * @deprecated - Есть функция с JOIN, которая совмещает данные с двух таблиц
      */
     async getTodayProgress(where) {
-        // Чтобы объект с where не был пустым
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         try {
             const todayPTS = await pool.query(
                 `SELECT COALESCE(SUM(ptsEarned), 0) as total,
                 COALESCE(COUNT(ptsEarned), 0) as matchesCount
                 FROM rating_month 
-                WHERE ${whereKey} = $1 AND dayFrom = CURRENT_DATE`,
-                [whereValue]
+                WHERE ${sql} AND dayFrom = CURRENT_DATE`,
+                params
             );
 
             return todayPTS.rows[0];
@@ -126,11 +133,9 @@ class RatingRepository {
      * @returns {Promise<QueryResult.rows[0]>}
      */
     async getCurrAndTodayProg(where) {
-        // Валидация
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         // Запрос
         try {
@@ -141,11 +146,11 @@ class RatingRepository {
                     COUNT(rm.ptsEarned) AS today_matches_count
                 FROM curr_rating cr
                 LEFT JOIN 
-                    rating_month rm ON cr.${whereKey} = rm.${whereKey} 
+                    rating_month rm ON cr.user_id = rm.user_id 
                     AND rm.dayFrom = CURRENT_DATE
-                WHERE cr.${whereKey} = $1
+                WHERE cr.${sql}
                 GROUP BY cr.rating_pts`,
-                [whereValue]
+                params
             );
 
             return (
@@ -171,11 +176,20 @@ class RatingRepository {
      * @returns {Promise<QueryResult.rows[0]>}
      */
     async createNewMatchRow(ptsEarned, user_id) {
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere({}, this.allowedColumns, false);
+        const { sql, params } = convertWhereToPGQuery(validWhere, [
+            ptsEarned,
+            user_id,
+        ]);
+
         try {
             const newRatingMonthRow = await pool.query(
                 `INSERT INTO rating_month (ptsEarned, dayFrom ,user_id) 
-                values ($1, CURRENT_DATE, $2) RETURNING *`,
-                [ptsEarned, user_id]
+                values ($1, CURRENT_DATE, $2) ${
+                    sql ? `WHERE ${sql}` : ``
+                } RETURNING *`,
+                params
             );
 
             return newRatingMonthRow.rows[0];
@@ -194,11 +208,9 @@ class RatingRepository {
      * @returns {Promise<QueryResult.rows>}
      */
     async getMonthDailyProgress(where) {
-        // Валидация
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         // Запрос
         try {
@@ -217,12 +229,12 @@ class RatingRepository {
                     FROM 
                         date_series ds
                     LEFT JOIN 
-                        rating_month rm ON ds.day = rm.dayFrom AND rm.${whereKey} = $1
+                        rating_month rm ON ds.day = rm.dayFrom AND rm.${sql}
                     GROUP BY 
                         ds.day
                     ORDER BY 
                         ds.day ASC`,
-                [whereValue]
+                params
             );
 
             return monthProg.rows;
@@ -241,11 +253,9 @@ class RatingRepository {
      * @returns {Promise<QueryResult.rows[0]>}
      */
     async getSeasonStats(where) {
-        // Валидация
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         try {
             const seasonProgress = await pool.query(
@@ -265,10 +275,10 @@ class RatingRepository {
                     rating_month,
                     dates d
                 WHERE 
-                    ${whereKey} = $1
+                    ${sql}
                     AND dayFrom >= d.season_start
                 `,
-                [whereValue]
+                params
             );
 
             return seasonProgress.rows[0];
