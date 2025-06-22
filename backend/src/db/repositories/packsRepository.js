@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import { validateWhere } from '../validators/where-validator.js';
+import { validateWhere, convertWhereToPGQuery } from '../validators/where-validator.js';
 
 class PacksRepository {
     constructor() {
@@ -12,17 +12,15 @@ class PacksRepository {
 
      */
     async getOne(where) {
-        // Валидация
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         try {
             // Запрос в БД для получения строки с информацией о количестве паков
             const QTY = await pool.query(
-                `SELECT * FROM packs WHERE ${whereKey} = $1`,
-                [whereValue]
+                `SELECT * FROM packs ${sql ? `WHERE ${sql}` : ``}`,
+                params
             );
 
             return QTY.rows[0];
@@ -46,16 +44,17 @@ class PacksRepository {
         if (!Number.isInteger(qty)) {
             throw new Error('Quantity value must be integer');
         }
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere, [qty]);
 
         try {
             // Обновление количества паков в БД
             const updatedQTY = await pool.query(
-                `UPDATE packs SET quantity = $1 WHERE ${whereKey} = $2 RETURNING *`,
-                [qty, whereValue]
+                `UPDATE packs SET quantity = $1 ${
+                    sql ? `WHERE ${sql}` : ``
+                } RETURNING *`,
+                params
             );
 
             return updatedQTY.rows[0];
@@ -78,12 +77,20 @@ class PacksRepository {
         if (!Number.isInteger(qty) || !Number.isInteger(user_id)) {
             throw new Error('Invalid input types');
         }
-        
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere({}, this.allowedColumns, false);
+        const { sql, params } = convertWhereToPGQuery(validWhere, [
+            qty,
+            user_id,
+        ]);
+
         try {
             // Создание записи о количестве паков пользователя
             const newRowPacks = await pool.query(
-                `INSERT INTO packs (quantity, user_id) values ($1, $2) RETURNING *`,
-                [qty, user_id]
+                `INSERT INTO packs (quantity, user_id) values ($1, $2) ${
+                    sql ? `WHERE ${sql}` : ``
+                } RETURNING *`,
+                params
             );
 
             return newRowPacks.rows[0];

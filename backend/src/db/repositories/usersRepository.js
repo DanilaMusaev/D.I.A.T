@@ -1,5 +1,8 @@
 import pool from '../db.js';
-import { validateWhere } from '../validators/where-validator.js';
+import {
+    validateWhere,
+    convertWhereToPGQuery,
+} from '../validators/where-validator.js';
 
 class UsersRepository {
     constructor() {
@@ -11,23 +14,21 @@ class UsersRepository {
      * @returns {Promise<QueryResult<any>.rows[0]>}
      */
     async getOne(where) {
-        // Валидация
-        const [whereKey, whereValue] = validateWhere(
-            where,
-            this.allowedColumns
-        );
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere(where, this.allowedColumns);
+        const { sql, params } = convertWhereToPGQuery(validWhere);
 
         try {
             // Запрос в БД для получения строки с информацией о пользователе
             const user = await pool.query(
-                `SELECT * FROM users WHERE ${whereKey} = $1`,
-                [whereValue]
+                `SELECT * FROM users ${sql ? `WHERE ${sql}` : ``}`,
+                params
             );
 
             return user.rows[0];
         } catch (err) {
             console.error(
-                `DB Error in  ${this.constructor.name}.getOne:`,
+                `DB Error in ${this.constructor.name}.getOne:`,
                 err.message
             );
             throw new Error('Failed to fetch user');
@@ -42,10 +43,19 @@ class UsersRepository {
      * @returns {Promise<QueryResult>}
      */
     async create(email, password) {
+        // Валидация с формированием WHERE параметров
+        const validWhere = validateWhere({}, this.allowedColumns, false);
+        const { sql, params } = convertWhereToPGQuery(validWhere, [
+            email,
+            password,
+        ]);
+
         try {
             const newUser = await pool.query(
-                `INSERT INTO users (email, password) values ($1, $2) RETURNING *`,
-                [email, password]
+                `INSERT INTO users (email, password) values ($1, $2) ${
+                    sql ? `WHERE ${sql}` : ``
+                } RETURNING *`,
+                params
             );
 
             return newUser.rows[0];

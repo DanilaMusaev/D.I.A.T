@@ -8,5 +8,6 @@ const ratingRouter = new Router();
 ratingRouter.get('/rating', ratingController.getCurrRating);
 ratingRouter.post('/rating', ratingController.updateCurrRating);
 ratingRouter.get('/rating-month', ratingController.getMonthProgress);
+ratingRouter.get('/rating-season', ratingController.getSeasonProgress);
 
 export default ratingRouter;
