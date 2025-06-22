@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 import './tabBtn.scss';
 
 /**
@@ -7,21 +7,31 @@ import './tabBtn.scss';
 interface TabBtnProps {
     children: React.ReactNode;
     linkPath: string;
+    additionalActivePaths?: string[];
 }
 
 /**
  * Таб/ссылка в шапке страницы.
  */
-function TabBtn({ children, linkPath }: TabBtnProps) {
+function TabBtn({
+    children,
+    linkPath,
+    additionalActivePaths = [],
+}: TabBtnProps) {
+    // Чтобы стили при нажатии менялись
+    const navLinkClasses = ({ isActive }: { isActive: boolean }): string => {
+        const currentPath = useLocation().pathname;
 
-    // Чтобы стили при нажатии менялись, мб не надо будет даже
-    // const navLinkClasses = ({ isActive }: { isActive: boolean }): string => {
-    //     return `tab ${isActive ? 'active' : ''}`;
-    // };
+        const isAdditionalActive = additionalActivePaths.some(
+            (path) => currentPath.startsWith(path) || currentPath === path
+        );
+
+        return `tab ${isActive || isAdditionalActive ? 'active' : ''}`;
+    };
 
     return (
         <>
-            <NavLink to={linkPath} className={'tab'}>
+            <NavLink to={linkPath} className={navLinkClasses} end>
                 {children}
             </NavLink>
         </>

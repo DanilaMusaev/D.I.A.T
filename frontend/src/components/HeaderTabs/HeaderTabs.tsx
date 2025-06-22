@@ -10,7 +10,15 @@ function HeaderTabs() {
         <nav className="nav_tabs">
             <TabBtn linkPath={LinkRoutes.GAMBLING_ROUTE_LINK}>Gambling</TabBtn>
             <TabBtn linkPath={LinkRoutes.PACKS_ROUTE_LINK}>Packs</TabBtn>
-            <TabBtn linkPath={LinkRoutes.RATING_DAILY_LINK}>Rating</TabBtn>
+            <TabBtn
+                linkPath={LinkRoutes.RATING_DAILY_LINK}
+                additionalActivePaths={[
+                    LinkRoutes.RATING_MONTH_LINK,
+                    LinkRoutes.RATING_SEASONS_LINK,
+                ]}
+            >
+                Rating
+            </TabBtn>
         </nav>
     );
 }

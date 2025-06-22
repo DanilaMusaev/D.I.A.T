@@ -7,3 +7,84 @@
     font-size: 40px;
     font-weight: 600;
 }
+
+.ranked-seasons_rankStats {
+    padding: 20px 0 58px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 23px;
+
+    max-width: 560px;
+    border: 2px solid #9fa4b4;
+    border-radius: 4px;
+
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.ranked-seasons_stats {
+    display: flex;
+    align-items: center;
+}
+
+.ranked-seasons_stat {
+    padding: 0 40px;
+    width: 33.3333%;
+
+    &:first-child {
+        border-right: 1px solid #9fa4b4;
+    }
+
+    &:last-child {
+        border-left: 1px solid #9fa4b4;
+    }
+}
+
+.ranked-seasons_statTitle {
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    color: #b0b0b0;
+
+    &::first-letter {
+        text-wrap: wrap;
+    }
+}
+
+.ranked-seasons_statValue {
+    font-weight: 600;
+    font-size: 30px;
+    text-align: center;
+    color: #fff;
+}
+
+.ranked-seasons_splits {
+    display: flex;
+    column-gap: 150px;
+}
+
+.ranked-seasons_split {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+}
+
+.ranked-seasons_splitName {
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    color: #b0b0b0;
+}
+
+.ranked-seasons_splitBudge {
+    max-width: 62px;
+    max-height: 62px;
+}
+
+.ranked-seasons_splitRank {
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+}

@@ -52,7 +52,7 @@ function RankedDaily() {
                                     `${playerStats.curTier}${playerStats.curDiv}`
                                 ]
                             }
-                            alt=""
+                            alt={`${playerStats.curTier}${playerStats.curDiv}`}
                         />
                         <div className="ranked-daily__stat">
                             <div className="ranked-daily__stat-text">

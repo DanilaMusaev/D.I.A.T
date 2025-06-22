@@ -4,6 +4,7 @@ import { AppRoutes } from '../../routes/consts';
 import RankedPage from '../../pages/rankedPages/RankedPage/RankedPage';
 import RankedDaily from '../../pages/rankedPages/RankedDaily/RankedDaily';
 import RankedMonth from '../../pages/rankedPages/RankedMonth/RankedMonth';
+import RankedSeasons from '../../pages/rankedPages/RankedSeasons/RankedSeasons';
 
 const AppRouter = () => {
     return (
@@ -15,6 +16,7 @@ const AppRouter = () => {
                 <Route element={<RankedPage />}>
                     <Route path={AppRoutes.RATING_ROUTE_DAILY} element={<RankedDaily />} />
                     <Route path={AppRoutes.RATING_ROUTE_MONTH} element={<RankedMonth />} />
+                    <Route path={AppRoutes.RATING_ROUTE_SEASONS} element={<RankedSeasons />} />
                 </Route>
             </Route>
             <Route path="*" element={<Navigate to={AppRoutes.SOON_ROUTE} />} />
