@@ -1,8 +1,11 @@
 .ranked-seasons {
     padding: 120px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    row-gap: 15px;
 
     font-size: 40px;
     font-weight: 600;

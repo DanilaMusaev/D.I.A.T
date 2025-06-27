@@ -1,9 +1,27 @@
+import { useState } from 'react';
 import { RANK_BUDGES_OBJ } from '../../../data/rankedBudges';
+import Select from '../../../components/Select/Select';
 import './rankedSeasons.scss';
 
 function RankedSeasons() {
+    const [selectedValue, setSelectedValue] = useState<string>('option1');
+
+    const options = [
+        { itemText: 'Season 25', itemValue: 's25' },
+        { itemText: 'Season 24', itemValue: 's24' },
+        { itemText: 'Season 23', itemValue: 's23' },
+    ];
+
     return (
         <div className="ranked-seasons">
+            <Select
+                options={options}
+                value={selectedValue}
+                onChange={(value) => setSelectedValue(value)}
+                style={{
+                    width: 560,
+                }}
+            />
             <div className="ranked-seasons_rankStats">
                 <div className="ranked-seasons_stats">
                     <div className="ranked-seasons_stat">
