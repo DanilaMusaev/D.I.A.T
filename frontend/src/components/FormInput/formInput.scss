@@ -1,0 +1,44 @@
+$inputBgColor: rgba(0, 0, 0, 0.5);
+$inputBorderColor: #9fa4b4;
+$inputColor: #fff;
+$placeholderColor: rgba(255, 255, 255, 0.7);
+
+.formInput {
+    padding: 10px 15px;
+
+    border: 1px solid $inputBorderColor;
+    border-radius: 6px;
+    background: $inputBgColor;
+
+    font-weight: 500;
+    font-size: 18px;
+    color: $inputColor;
+
+    &:focus ~ .formInput_placeholder {
+        top: 9px;
+        font-size: 10px;
+    }
+}
+
+.formInput__wrapper {
+    position: relative;
+}
+
+.formInput_placeholder {
+    position: absolute;
+    pointer-events: none;
+    left: 15px;
+    top: 50%;
+
+    font-weight: 500;
+    font-size: 18px;
+    color: $placeholderColor;
+
+    transform: translateY(-50%);
+    transition: 0.15s ease-out;
+
+    &.top {
+        top: 9px;
+        font-size: 10px;
+    }
+}

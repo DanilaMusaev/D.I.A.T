@@ -2,6 +2,7 @@ import { useState, useEffect, type ChangeEvent, type MouseEvent } from 'react';
 import { useRatingStore } from '../../../state/rating';
 import { RANK_BUDGES_OBJ } from '../../../data/rankedBudges';
 import { getRankBudget } from '../../../helpers/getRankBudge';
+import GradBtn from '../../../components/GradBtn/GradBtn';
 import './rankedDaily.scss';
 
 function RankedDaily() {
@@ -134,9 +135,7 @@ function RankedDaily() {
                         />
                     </form>
                     <div className="ranked-daily__btn">
-                        <button onClick={handleClick} className="apply-btn">
-                            Apply
-                        </button>
+                        <GradBtn onClick={handleClick}>Apply</GradBtn>
                     </div>
                 </div>
                 <div className="ranked-daily__block">

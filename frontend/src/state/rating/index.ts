@@ -3,14 +3,20 @@ import type { RatingActions, RatingState } from './types';
 import RatingService from '../../api/RatingService';
 import { createInitialStats } from '../../utils/calculateStats/someUtils';
 import { calcPlayerStats } from '../../utils/calculateStats/calcStats';
-import type { MonthRatingType } from '../../api/types/api-types';
+import type {
+    MonthRatingType,
+    SeasonRatingType,
+} from '../../api/types/api-types';
 
 export const useRatingStore = create<RatingState & RatingActions>((set) => ({
     monthData: [] as MonthRatingType[],
     currentRP: 0,
     matchesQTY: 0,
     ernLostRP: 0,
+    seasonsData: {} as SeasonRatingType,
     playerStats: createInitialStats(),
+    firstSplitStats: createInitialStats(),
+    secondSplitStats: createInitialStats(),
     getCurrentRating: async (userId) => {
         // Получаем данные о количестве открытых паков с сервера
         const currentRatingData = await RatingService.getCurrentRating(userId);
@@ -29,6 +35,16 @@ export const useRatingStore = create<RatingState & RatingActions>((set) => ({
         set((state) => ({
             ...state,
             monthData: monthRatingData,
+        }));
+    },
+    getSeasonRating: async (userId) => {
+        const seasonRatingData = await RatingService.getSeasonRating(userId);
+
+        set((state) => ({
+            ...state,
+            seasonsData: seasonRatingData,
+            firstSplitStats: calcPlayerStats(seasonRatingData.first_half_sum),
+            secondSplitStats: calcPlayerStats(seasonRatingData.second_half_sum),
         }));
     },
     updateCurrentRating: async (ptsCount, userId) => {

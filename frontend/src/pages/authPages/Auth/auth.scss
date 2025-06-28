@@ -1,0 +1,83 @@
+.authWrapper {
+    height: calc(100vh - 100px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.authTitle {
+    margin-bottom: 35px;
+}
+
+.authFrom {
+    padding: 25px 100px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border-radius: 25px;
+    box-shadow: 1px 2px 8px 0 rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.authFrom__title {
+    margin-bottom: 25px;
+
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 100%;
+    text-align: center;
+    color: #fff;
+}
+
+.authForm__input {
+    margin-bottom: 25px;
+}
+
+.authForm__itemWrapper {
+    width: 100%;
+
+    &--textRight {
+        text-align: right;
+    }
+
+    &--textLeft {
+        text-align: left;
+    }
+}
+
+.authForm__forgot {
+    width: fit-content;
+    
+    margin-top: -10px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+
+    transition: color 0.2s ease-out;
+    &:hover {
+        cursor: pointer;
+        color: #ff4f1d;
+    }
+}
+
+.authForm_button {
+    margin-bottom: 100px;
+}
+
+.logOrReg__text {
+    font-weight: 400;
+    font-size: 16px;
+    color: #fff;
+}
+
+.logOrReg__link {
+    color: #ff4f1d;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

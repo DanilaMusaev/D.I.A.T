@@ -38,6 +38,7 @@ $arrowBg: $border;
 }
 
 .dropdown__selectArrow {
+    pointer-events: none;
     position: absolute;
 
     top: 50%;

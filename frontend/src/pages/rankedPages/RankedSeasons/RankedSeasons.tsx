@@ -1,10 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RANK_BUDGES_OBJ } from '../../../data/rankedBudges';
 import Select from '../../../components/Select/Select';
 import './rankedSeasons.scss';
+import { useRatingStore } from '../../../state/rating';
 
 function RankedSeasons() {
+    // Состояния из state
+    const seasonsData = useRatingStore((state) => state.seasonsData);
+    const firstHalfData = useRatingStore((state) => state.firstSplitStats);
+    const secondHalfData = useRatingStore((state) => state.secondSplitStats);
+    const getSeasonsRating = useRatingStore((state) => state.getSeasonRating);
+    // Состояние для селекта
     const [selectedValue, setSelectedValue] = useState<string>('option1');
+
+    useEffect(() => {
+        // Пока что моковые данные так как авторизация не готова
+        const userId = 1;
+        // Получение данных
+        getSeasonsRating(userId);
+    }, []);
 
     const options = [
         { itemText: 'Season 25', itemValue: 's25' },
@@ -28,42 +42,57 @@ function RankedSeasons() {
                         <h3 className="ranked-seasons_statTitle">
                             TOTAL MATCHES
                         </h3>
-                        <div className="ranked-seasons_statValue">241</div>
+                        <div className="ranked-seasons_statValue">
+                            {seasonsData.negative_count +
+                                seasonsData.positive_count}
+                        </div>
                     </div>
                     <div className="ranked-seasons_stat">
                         <h3 className="ranked-seasons_statTitle">
                             MATCHES IN THE PLUS
                         </h3>
-                        <div className="ranked-seasons_statValue">140</div>
+                        <div className="ranked-seasons_statValue">
+                            {seasonsData.positive_count}
+                        </div>
                     </div>
                     <div className="ranked-seasons_stat">
                         <h3 className="ranked-seasons_statTitle">
                             MATCHES IN THE MINUS
                         </h3>
-                        <div className="ranked-seasons_statValue">101</div>
+                        <div className="ranked-seasons_statValue">
+                            {seasonsData.negative_count}
+                        </div>
                     </div>
                 </div>
                 <div className="ranked-seasons_splits">
                     <div className="ranked-seasons_split">
                         <div className="ranked-seasons_splitName">Split 1</div>
                         <img
-                            src={RANK_BUDGES_OBJ['PlatinumIII']}
+                            src={
+                                RANK_BUDGES_OBJ[
+                                    `${firstHalfData.curTier}${firstHalfData.curDiv}`
+                                ]
+                            }
                             className="ranked-seasons_splitBudge"
                             alt="rank"
                         />
                         <div className="ranked-seasons_splitRank">
-                            Platinum III
+                            {`${firstHalfData.curTier} ${firstHalfData.curDiv}`}
                         </div>
                     </div>
                     <div className="ranked-seasons_split">
                         <div className="ranked-seasons_splitName">Split 2</div>
                         <img
-                            src={RANK_BUDGES_OBJ['DiamondIV']}
+                            src={
+                                RANK_BUDGES_OBJ[
+                                    `${secondHalfData.curTier}${secondHalfData.curDiv}`
+                                ]
+                            }
                             className="ranked-seasons_splitBudge"
                             alt="rank"
                         />
                         <div className="ranked-seasons_splitRank">
-                            Diamond IV
+                            {`${secondHalfData.curTier} ${secondHalfData.curDiv}`}
                         </div>
                     </div>
                 </div>

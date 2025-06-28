@@ -1,8 +1,11 @@
-import type { MonthRatingType } from '../../api/types/api-types';
+import type {
+    MonthRatingType,
+    SeasonRatingType,
+} from '../../api/types/api-types';
 import type { PlayerStats } from '../../utils/calculateStats/types';
 
 /**
- * Тип состояния паков
+ * Тип состояния для рейтинга
  */
 export interface RatingState {
     currentRP: number;
@@ -10,12 +13,16 @@ export interface RatingState {
     ernLostRP: number;
     playerStats: PlayerStats;
     monthData: Array<MonthRatingType>;
+    seasonsData: SeasonRatingType;
+    firstSplitStats: PlayerStats;
+    secondSplitStats: PlayerStats;
 }
 /**
- * Типы для actions состояния паков
+ * Типы для actions состояния рейтинга
  */
 export interface RatingActions {
     getCurrentRating: (userId: number) => Promise<void>;
     getMonthRating: (userId: number) => Promise<void>;
+    getSeasonRating: (userId: number) => Promise<void>;
     updateCurrentRating: (ptsCount: number, userId: number) => Promise<void>;
 }

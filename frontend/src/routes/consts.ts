@@ -16,6 +16,16 @@ export const enum AppRoutes {
     SOON_ROUTE = '/not-ready',
 }
 
+export const enum NoAuthRoutes {
+    LOGIN_ROUTE = '/login',
+    REGISTRATION_ROUTE = '/registration',
+    GAMBLING_ROUTE = '/',
+    GAMBLING_SOLOS_ROUTE = '/gambling-solos',
+    GAMBLING_DUOS_ROUTE = '/gambling-duos',
+    GAMBLING_TRIOS_ROUTE = '/gambling-trios',
+    SOON_ROUTE = '/not-ready',
+}
+
 export const enum LinkRoutes {
     GAMBLING_ROUTE_LINK = '/',
     GAMBLING_SOLOS_LINK = '/gambling-solos',
