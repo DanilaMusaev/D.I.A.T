@@ -4,7 +4,6 @@ import usersController from '../controllers/users.controller.js';
 // Экземпляр роутера
 const usersRouter = new Router();
 // Endpoints
-usersRouter.get('/users', usersController.getUserById);
 usersRouter.post('/users/login', usersController.login);
 usersRouter.post('/users/registration', usersController.registration);
 
