@@ -21,7 +21,10 @@ export const fetchApiGET =
                         : ''
                 }`,
                 fetchURL
-            ).href
+            ).href,
+            {
+                credentials: 'include', // Здесь все норм, так как options не вынесены
+            }
         );
         // Преобразование ответа в json
         const data = (await res.json()) as T;
@@ -29,19 +32,30 @@ export const fetchApiGET =
         return data;
     };
 
+export const fetchApiGETNoJSON = (route: string) => async () => {
+    // Основной URL для запроса, со сменой роута
+    const fetchURL = new URL(`api/${route}`, API_BASE_URL);
+    const res = await fetch(fetchURL.href, {
+        credentials: 'include',
+    });
+
+    return res;
+};
+
 export const fetchApiPOST =
     (route: string) =>
     async <T extends object, RT extends object>(body: T) => {
         // Основной URL для запроса, со сменой роута
         const fetchURL = new URL(`api/${route}`, API_BASE_URL);
         // Параметры запроса
-        const requestOptions = {
+        const requestOptions: RequestInit = {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         };
         // Сам запрос
-        const res = await fetch(fetchURL.href, requestOptions);
+        const res = await fetch(fetchURL.href, requestOptions); // Ругается, так как Type 'string' is not assignable to type 'RequestCredentials | undefined'.
         // Преобразуем в json ответ
         const data = (await res.json()) as RT;
 

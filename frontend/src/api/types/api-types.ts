@@ -1,7 +1,19 @@
+import type { Email } from '../../state/auth/types';
+
 // Тип для query параметров
 export type QueryParams = {
     [key in string]: string | number;
 };
+
+export interface AuthTypeBody {
+    email: Email;
+    password: string;
+}
+
+export interface AuthTypeResponse {
+    id: number;
+    email: Email;
+}
 /**
  * Тип тела запроса для паков
  */

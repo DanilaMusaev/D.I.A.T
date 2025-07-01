@@ -1,4 +1,4 @@
-// Класс с сервисом для связи с сервером о информации с паками
+// Класс с сервисом для связи с сервером о информации о рейтинге
 
 import { ConvertMonthRatingData } from '../utils/monthDataConvert';
 import type { ValueTypeConvert } from '../utils/utilityTypes/ValueTypeConvert';
