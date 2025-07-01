@@ -1,8 +1,8 @@
 // Файл для конфигурации БД
 // Получаем Pool из пакета для работы с Postgres
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import pgk from 'pg';
-dotenv.config();
+
 
 const { Pool } = pgk;
 

@@ -34,7 +34,15 @@ class UsersController {
                 );
             }
             // Пытаемся залогиниться
-            const user = await userService.loginUser(email, password);
+            const { user, token } = await userService.loginUser(
+                email,
+                password
+            );
+            // Запись токена в Cookie
+            res.cookie('token', token, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
 
             return res.json(user);
         } catch (err) {
@@ -53,9 +61,17 @@ class UsersController {
                 return next(ApiError.BadRequest('Нет email или пароля'));
             }
             // Создаем пользователя
-            const newUser = await userService.createUser(email, password);
+            const { token, user } = await userService.createUser(
+                email,
+                password
+            );
+            // Запись токена в Cookie
+            res.cookie('token', token, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
 
-            return res.json(newUser);
+            return res.json(user);
         } catch (err) {
             console.log(err);
             // Вызываем функцию next() для того, чтобы сработал middleware обработчика ошибок
