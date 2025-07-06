@@ -91,9 +91,9 @@ class UsersService {
         // Создание нового пользователя
         const newUser = await usersRepository.create(email, hashPassword);
         // Вместе с созданием нового пользователя, создаем ему и запись в БД с его количеством паков, равной 0 по умолчанию
-        const newPacksRow = await packsRepository.createOne(0, newUser.id);
+        await packsRepository.createOne(0, newUser.id);
         // Также создаем запись о количестве текущего рейтинга пользователя, по умолчанию 0
-        const newRatingRow = await ratingRepository.create(0, newUser.id);
+        await ratingRepository.create(0, newUser.id);
         // Dto пользователя, чтобы не вернуть на клиент ничего лишнего
         const userDto = new UserDto(newUser);
         // Генерация токена
@@ -102,6 +102,26 @@ class UsersService {
         });
 
         return { token: accessToken, user: userDto };
+    }
+
+    /**
+     * 
+     * @param {UserDto} prevData 
+     * @returns 
+     */
+    async refreshToken(prevData) {
+        // До этого прошлый токен проверяется в middleware
+        const userData = new UserDto(prevData);
+        // Находим пользователя по id, на случай, если информация о нем поменялась
+        const user = await usersRepository.getOne({ id: userData.id });
+        // Новая запись пользователя
+        const newUserDto = new UserDto(user);
+        // Генерация токена
+        const { accessToken } = tokenService.generateAccessToken({
+            ...newUserDto,
+        });
+
+        return { user: newUserDto, token: accessToken };
     }
 }
 

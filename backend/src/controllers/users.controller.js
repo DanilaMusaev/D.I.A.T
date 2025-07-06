@@ -78,6 +78,24 @@ class UsersController {
             next(err);
         }
     }
+
+    async refreshToken(req, res, next) {
+        try {
+            // После Middleware здесь будет раскодированная информация о пользователя в формате UserDto
+            const userData = req.user;
+            // Обновляем токен
+            const { user, token } = await userService.refreshToken(userData);
+            // Перезапись cookie
+            res.cookie('token', token, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
+            return res.json(user);
+        } catch (err) {
+            console.log(err);
+            next(err);
+        }
+    }
 }
 
 export default new UsersController();
