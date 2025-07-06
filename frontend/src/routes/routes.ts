@@ -1,12 +1,13 @@
 import type { JSX } from 'react';
 import GamblingPage from '../pages/gamblingPages/GamblingPage/GamblingPage';
-import SoonPage from '../pages/SoonPage/SoonPage';
 import GambleSolosPage from '../pages/gamblingPages/GambleSolosPage/GambleSolosPage';
 import GambleDuosPage from '../pages/gamblingPages/GambleDuosPage/GambleDuosPage';
 import GambleTriosPage from '../pages/gamblingPages/GambleTriosPage/GambleTriosPage';
 import { AppRoutes, NoAuthRoutes } from './consts';
 import PacksPage from '../pages/PacksPage/PacksPage';
 import Auth from '../pages/authPages/Auth/Auth';
+import ErrorPage from '../pages/SoonPage/errorPage';
+import NoAuth from '../pages/NoAuthPage/NoAuthPage';
 
 /**
  * Тип для роута
@@ -49,6 +50,14 @@ export const noAuthRoutes: Array<DIATNoAuthRouteType> = [
         path: NoAuthRoutes.GAMBLING_TRIOS_ROUTE,
         Component: GambleTriosPage,
     },
+    {
+        path: NoAuthRoutes.ERROR_ROUTE,
+        Component: ErrorPage,
+    },
+    {
+        path: NoAuthRoutes.NO_AUTH_ROUTE,
+        Component: NoAuth,
+    },
 ];
 
 // Список маршрутов для страниц
@@ -74,7 +83,7 @@ export const diatRoutes: Array<DIATRouteType> = [
         Component: PacksPage,
     },
     {
-        path: AppRoutes.SOON_ROUTE,
-        Component: SoonPage,
+        path: AppRoutes.ERROR_ROUTE,
+        Component: ErrorPage,
     },
 ];

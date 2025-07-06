@@ -2,13 +2,32 @@ import { useState } from 'react';
 import FormInput from '../../../components/FormInput/FormInput';
 import GradBtn from '../../../components/GradBtn/GradBtn';
 import './auth.scss';
-import { Link } from 'react-router';
-import { NoAuthRoutes } from '../../../routes/consts';
+import { Link, useNavigate } from 'react-router';
+import { AppRoutes, NoAuthRoutes } from '../../../routes/consts';
+import { useAuthState } from '../../../state/auth';
+import isEmail from '../../../guards/isEmail';
 
 function Auth() {
+    // Функция для логина из состояния
+    const login = useAuthState((state) => state.login);
+    // Ссылка для навигации
+    const navigate = useNavigate();
     // Состояние для inputs
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    async function clickToLogin() {
+        // Проверка валидности введенного email
+        if (isEmail(email)) {
+            try {
+                // Отправка запроса на логин
+                await login(email, password);
+                navigate(AppRoutes.GAMBLING_ROUTE, { replace: true });
+            } catch (err) {
+                console.error('Ошибка входа', err);
+            }
+        }
+    }
 
     return (
         <div className="authWrapper">
@@ -39,9 +58,7 @@ function Auth() {
                 <GradBtn
                     className="authForm_button"
                     wide={true}
-                    onClick={() => {
-                        console.log('Login');
-                    }}
+                    onClick={clickToLogin}
                 >
                     Login
                 </GradBtn>

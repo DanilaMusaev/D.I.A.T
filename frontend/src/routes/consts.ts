@@ -13,7 +13,7 @@ export const enum AppRoutes {
     RATING_ROUTE_DAILY = 'daily',
     RATING_ROUTE_MONTH = 'month',
     RATING_ROUTE_SEASONS = 'seasons',
-    SOON_ROUTE = '/not-ready',
+    ERROR_ROUTE = '/not-found',
 }
 
 export const enum NoAuthRoutes {
@@ -23,7 +23,8 @@ export const enum NoAuthRoutes {
     GAMBLING_SOLOS_ROUTE = '/gambling-solos',
     GAMBLING_DUOS_ROUTE = '/gambling-duos',
     GAMBLING_TRIOS_ROUTE = '/gambling-trios',
-    SOON_ROUTE = '/not-ready',
+    ERROR_ROUTE = '/not-found',
+    NO_AUTH_ROUTE = '/no-auth',
 }
 
 export const enum LinkRoutes {

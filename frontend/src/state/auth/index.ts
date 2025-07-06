@@ -15,7 +15,7 @@ export const useAuthState = create<AuthState & AuthActions>((set) => ({
         }));
     },
     login: async (email, password) => {
-        const userData = await AuthService.registration(email, password);
+        const userData = await AuthService.login(email, password);
 
         set((state) => ({
             ...state,
@@ -30,6 +30,11 @@ export const useAuthState = create<AuthState & AuthActions>((set) => ({
             set((state) => ({
                 ...state,
                 isAuth: true,
+            }));
+        } else {
+            set((state) => ({
+                ...state,
+                isAuth: false,
             }));
         }
     },
