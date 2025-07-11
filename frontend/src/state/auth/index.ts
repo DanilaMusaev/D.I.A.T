@@ -5,37 +5,24 @@ import AuthService from '../../api/AuthService';
 export const useAuthState = create<AuthState & AuthActions>((set) => ({
     user: {} as User,
     isAuth: false,
+    isLoading: true,
     registration: async (email, password) => {
+        set({ isLoading: true });
         const userData = await AuthService.registration(email, password);
 
-        set((state) => ({
-            ...state,
-            user: userData,
-            isAuth: true,
-        }));
+        set({ user: userData, isAuth: true, isLoading: false });
     },
     login: async (email, password) => {
+        set({ isLoading: true });
+
         const userData = await AuthService.login(email, password);
 
-        set((state) => ({
-            ...state,
-            user: userData,
-            isAuth: true,
-        }));
+        set({ user: userData, isAuth: true, isLoading: false });
     },
     checkAuth: async () => {
+        set({ isLoading: true });
         const ok = await AuthService.checkAuth();
-
-        if (ok) {
-            set((state) => ({
-                ...state,
-                isAuth: true,
-            }));
-        } else {
-            set((state) => ({
-                ...state,
-                isAuth: false,
-            }));
-        }
+        console.log('AUTH OK: ', ok);
+        set({ isAuth: ok, isLoading: false });
     },
 }));

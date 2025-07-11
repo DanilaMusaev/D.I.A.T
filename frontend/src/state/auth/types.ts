@@ -8,6 +8,7 @@ export interface User {
 export interface AuthState {
     user: User;
     isAuth: boolean;
+    isLoading: boolean;
 }
 
 export interface AuthActions {

@@ -6,15 +6,42 @@ import RankedDaily from '../../pages/rankedPages/RankedDaily/RankedDaily';
 import RankedMonth from '../../pages/rankedPages/RankedMonth/RankedMonth';
 import RankedSeasons from '../../pages/rankedPages/RankedSeasons/RankedSeasons';
 import { useAuthState } from '../../state/auth';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import GlobalLoader from '../globalLoader/GlobalLoader';
 
 const AppRouter = () => {
     const isAuth = useAuthState((state) => state.isAuth);
+    const isAuthLoading = useAuthState((state) => state.isLoading);
     const checkAuth = useAuthState((state) => state.checkAuth);
+    // Локальное состояние для искусственной задержки, во избежание "мелькания" UI
+    const [showLoader, setShowLoader] = useState(false);
+    const loaderStartTime = useRef(0);
 
+    // Проверка авторизации один раз при загрузке страницыю
     useEffect(() => {
         checkAuth();
     }, []);
+
+    // Задержка для избежания мелькания UI
+    useEffect(() => {
+        if (isAuthLoading) {
+            // Фиксируем время начала загрузки
+            loaderStartTime.current = Date.now();
+            setShowLoader(true); // Показываем лоадер сразу
+        } else {
+            // Вычисляем оставшееся время для минимальной продолжительности (например, 500 мс)
+            const elapsed = Date.now() - loaderStartTime.current;
+            const remainingTime = Math.max(500 - elapsed, 0);
+
+            // Скрываем лоадер только после истечения минимального времени
+            const timer = setTimeout(() => setShowLoader(false), remainingTime);
+            return () => clearTimeout(timer);
+        }
+    }, [isAuthLoading]);
+
+    if (isAuthLoading || showLoader) {
+        return <GlobalLoader />;
+    }
 
     return (
         <Routes>
