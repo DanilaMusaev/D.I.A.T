@@ -1,7 +1,7 @@
 import type {
     MonthRatingType,
     SeasonRatingType,
-} from '../../api/types/api-types';
+} from '../../api/RatingService/types';
 import type { PlayerStats } from '../../utils/calculateStats/types';
 
 /**
@@ -16,6 +16,7 @@ export interface RatingState {
     seasonsData: SeasonRatingType;
     firstSplitStats: PlayerStats;
     secondSplitStats: PlayerStats;
+    error: string | null;
 }
 /**
  * Типы для actions состояния рейтинга
@@ -25,4 +26,5 @@ export interface RatingActions {
     getMonthRating: (userId: number) => Promise<void>;
     getSeasonRating: (userId: number) => Promise<void>;
     updateCurrentRating: (ptsCount: number, userId: number) => Promise<void>;
+    clearError: () => Promise<void>;
 }
