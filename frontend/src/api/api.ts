@@ -9,6 +9,15 @@ const API_BASE_URL = new URL(import.meta.env.VITE_API_BASE_URL);
 export const fetchApiGET =
     (route: string) =>
     async <T>(queryParams?: QueryParams): Promise<ApiResponse<T>> => {
+        // Проверка на интернет соединение
+        if (!navigator.onLine) {
+            return {
+                data: null,
+                error: `Has no internet connection`,
+                status: 0,
+            };
+        }
+
         try {
             // Основной URL для запроса, со сменой роута
             const fetchURL = new URL(`api/${route}`, API_BASE_URL);
@@ -40,6 +49,15 @@ export const fetchApiPOST =
     async <T extends object, RT extends object>(
         body: T
     ): Promise<ApiResponse<RT>> => {
+        // Проверка на интернет соединение
+        if (!navigator.onLine) {
+            return {
+                data: null,
+                error: `Has no internet connection`,
+                status: 0,
+            };
+        }
+
         // Основной URL для запроса, со сменой роута
         const fetchURL = new URL(`api/${route}`, API_BASE_URL);
         // Параметры запроса
