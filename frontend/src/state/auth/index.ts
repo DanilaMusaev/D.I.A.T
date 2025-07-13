@@ -39,8 +39,8 @@ export const useAuthState = create<AuthState & AuthActions>((set) => ({
     checkAuth: async () => {
         try {
             set({ isLoading: true });
-            await AuthService.checkAuth();
-            set({ isAuth: true });
+            const resData = await AuthService.checkAuth();
+            set({ isAuth: true, user: resData, error: null });
         } catch (error) {
             set({
                 isAuth: false,

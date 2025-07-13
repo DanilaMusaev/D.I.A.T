@@ -3,12 +3,15 @@ import { useState } from 'react';
 import PacksBtn from '../../components/PacksBtn/PacksBtn';
 import { usePacksStore } from '../../state/packs';
 import './packsPage.scss';
+import { useAuthState } from '../../state/auth';
 
 function PacksPage() {
     // Получаем нужные поля из state, а также функции для fetch данных
     const packs = usePacksStore((state) => state.packs);
     const getPacks = usePacksStore((state) => state.getPacksQTY);
     const updatePacks = usePacksStore((state) => state.updatePacksQTY);
+    // state пользователя
+    const user = useAuthState(state => state.user);
     // Управляемое состояние для input с количеством паков
     const [packsInput, setPacksInput] = useState<string>('');
 
@@ -16,20 +19,17 @@ function PacksPage() {
     function handleClick(event: MouseEvent<HTMLButtonElement>) {
         // Отмена изначально ивент действия
         event.preventDefault();
-        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
-        const userId = 1;
         // Отправка action на обновление данных о количестве открытых паков на сервере
-        updatePacks(userId, Number(packsInput)).then(() => {
+        updatePacks(user.id, Number(packsInput)).then(() => {
             // Очистка input по завершению
             setPacksInput('');
         });
     }
 
     useEffect(() => {
-        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
-        const userId = 1;
         // Отправка запроса на получение количества паков
-        getPacks(userId);
+        console.log(user.id);
+        getPacks(user.id);
     }, []);
 
     return (

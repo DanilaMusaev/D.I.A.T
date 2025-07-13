@@ -3,12 +3,15 @@ import './rankedMonth.scss';
 import StatPointLine from './StatPointLine/StatPointLine';
 import { useRatingStore } from '../../../state/rating';
 import { useEffect } from 'react';
+import { useAuthState } from '../../../state/auth';
 
 function RankedMonth() {
     // Данные из state
     const monthRating = useRatingStore((state) => state.monthData);
     // Actions из state
     const getMonthRating = useRatingStore((state) => state.getMonthRating);
+    // state пользователя
+    const user = useAuthState((state) => state.user);
 
     // Массив для генерации линий статистики
     const statPoints = Array.from(
@@ -17,10 +20,8 @@ function RankedMonth() {
     );
     // Предзагрузка данных
     useEffect(() => {
-        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
-        const userId = 1;
         // Подгрузка данных
-        getMonthRating(userId);
+        getMonthRating(user.id);
     }, []);
 
     return (
@@ -42,11 +43,17 @@ function RankedMonth() {
                             {statPoints.map((_, i) => {
                                 if (i === statPoints.length - 1) {
                                     return (
-                                        <div key={i} className="ranked-month__stat-line ranked-month__stat-line--wide"></div>
+                                        <div
+                                            key={i}
+                                            className="ranked-month__stat-line ranked-month__stat-line--wide"
+                                        ></div>
                                     );
                                 } else {
                                     return (
-                                        <div key={i} className="ranked-month__stat-line"></div>
+                                        <div
+                                            key={i}
+                                            className="ranked-month__stat-line"
+                                        ></div>
                                     );
                                 }
                             })}

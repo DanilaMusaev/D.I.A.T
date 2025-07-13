@@ -53,7 +53,10 @@ class AuthService {
         if (res.error) {
             throw new Error(res.error);
         }
-        return res;
+        if (!res.data) {
+            throw new Error(`Authorization verification failed`);
+        }
+        return res.data;
     }
 }
 

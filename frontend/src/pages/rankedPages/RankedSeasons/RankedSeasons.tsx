@@ -3,6 +3,7 @@ import { RANK_BUDGES_OBJ } from '../../../data/rankedBudges';
 import Select from '../../../components/Select/Select';
 import './rankedSeasons.scss';
 import { useRatingStore } from '../../../state/rating';
+import { useAuthState } from '../../../state/auth';
 
 function RankedSeasons() {
     // Состояния из state
@@ -10,14 +11,14 @@ function RankedSeasons() {
     const firstHalfData = useRatingStore((state) => state.firstSplitStats);
     const secondHalfData = useRatingStore((state) => state.secondSplitStats);
     const getSeasonsRating = useRatingStore((state) => state.getSeasonRating);
+    // state пользователя
+    const user = useAuthState((state) => state.user);
     // Состояние для селекта
     const [selectedValue, setSelectedValue] = useState<string>('option1');
 
     useEffect(() => {
-        // Пока что моковые данные так как авторизация не готова
-        const userId = 1;
         // Получение данных
-        getSeasonsRating(userId);
+        getSeasonsRating(user.id);
     }, []);
 
     const options = [

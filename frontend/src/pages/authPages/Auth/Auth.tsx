@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import FormInput from '../../../components/FormInput/FormInput';
 import GradBtn from '../../../components/GradBtn/GradBtn';
 import { Link, useLocation, useNavigate } from 'react-router';

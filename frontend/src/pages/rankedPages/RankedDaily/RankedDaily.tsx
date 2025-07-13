@@ -4,6 +4,7 @@ import { RANK_BUDGES_OBJ } from '../../../data/rankedBudges';
 import { getRankBudget } from '../../../helpers/getRankBudge';
 import GradBtn from '../../../components/GradBtn/GradBtn';
 import './rankedDaily.scss';
+import { useAuthState } from '../../../state/auth';
 
 function RankedDaily() {
     // Из state берутся необходимые поля
@@ -16,16 +17,16 @@ function RankedDaily() {
     const updateCurrentRating = useRatingStore(
         (state) => state.updateCurrentRating
     );
+    // state пользователя
+    const user = useAuthState((state) => state.user);
     // Управляемое состояние для поля ввода
     const [inputRP, setInputRP] = useState<string>('');
 
     function handleClick(event: MouseEvent<HTMLButtonElement>) {
         // Отмена стандартного поведения
         event.preventDefault();
-        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
-        const userId = 1;
         // Запрос на обновление рейтинга на сервере
-        updateCurrentRating(Number(inputRP), userId)
+        updateCurrentRating(Number(inputRP), user.id)
             .then(() => {
                 setInputRP('');
             })
@@ -35,10 +36,8 @@ function RankedDaily() {
     }
 
     useEffect(() => {
-        // Id пользователя, которому надо получить количество паков (Пока что хардкод, так как нет авторизации)
-        const userId = 1;
         // Отправка запроса на получение количества паков
-        getCurrentRating(userId);
+        getCurrentRating(user.id);
     }, []);
 
     return (
