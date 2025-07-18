@@ -1,5 +1,7 @@
 $inputBgColor: rgba(0, 0, 0, 0.5);
 $inputBorderColor: #9fa4b4;
+$inputBgNotValidColor: #4e0f10;
+$inputBgValidColor: #1c8f3e;
 $inputColor: #fff;
 $placeholderColor: rgba(255, 255, 255, 0.7);
 
@@ -17,6 +19,13 @@ $placeholderColor: rgba(255, 255, 255, 0.7);
     &:focus ~ .formInput_placeholder {
         top: 9px;
         font-size: 10px;
+    }
+
+    &.notValid {
+        border-color: $inputBgNotValidColor;
+    }
+    &.valid {
+        border-color: $inputBgValidColor;
     }
 }
 

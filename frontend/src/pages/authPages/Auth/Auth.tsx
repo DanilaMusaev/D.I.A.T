@@ -19,8 +19,14 @@ function Auth() {
     const [password, setPassword] = useState('');
     // Проверка страницы
     const isLoginPage: boolean = location.pathname === '/login';
+    // Состояние загрузки
+    const [isLoading, setIsLoading] = useState(false);
 
     async function clickToSendForm() {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
         const isLoginPage: boolean = location.pathname === '/login';
         const action = isLoginPage ? login : registration;
         const errorMessage = isLoginPage
@@ -28,15 +34,19 @@ function Auth() {
             : 'Ошибка при регистрации';
 
         if (!isEmail(email)) {
-            console.error('Некорректный email');
+            setIsLoading(false);
             return;
         }
 
         try {
-            await action(email, password);
-            navigate(AppRoutes.GAMBLING_ROUTE, { replace: true });
+            const ok = await action(email, password);
+            if (ok) {
+                navigate(AppRoutes.GAMBLING_ROUTE, { replace: true });
+            }
         } catch (err) {
             console.error(errorMessage, err);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -56,6 +66,7 @@ function Auth() {
                     onChange={(e) => {
                         setEmail(e.target.value);
                     }}
+                    validator={(string: string) => isEmail(string)}
                     placeholder="Email"
                     inputWidth={350}
                 />
@@ -76,6 +87,7 @@ function Auth() {
                     className="authForm_button"
                     wide={true}
                     onClick={clickToSendForm}
+                    loading={isLoading}
                 >
                     {isLoginPage ? `Login` : `Register`}
                 </GradBtn>

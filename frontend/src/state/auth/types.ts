@@ -13,8 +13,8 @@ export interface AuthState {
 }
 
 export interface AuthActions {
-    registration: (email: Email, password: string) => Promise<void>;
-    login: (email: Email, password: string) => Promise<void>;
+    registration: (email: Email, password: string) => Promise<boolean>;
+    login: (email: Email, password: string) => Promise<boolean>;
     checkAuth: () => Promise<void>;
     clearError: () => Promise<void>;
 }

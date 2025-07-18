@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { ValidationsInput } from './types/typesHooks';
+import isEmail from '../guards/isEmail';
 
 export const useValidation = (value: string, validations: ValidationsInput) => {
     // Состояния, которые хранят информацию об ошибке
     const [isEmptyError, setIsEmptyError] = useState<boolean>(true);
     const [minLengthError, setMinLengthError] = useState<boolean>(false);
     const [maxLengthError, setMaxLengthError] = useState<boolean>(false);
+    const [isEmailError, setIsEmailError] = useState<boolean>(false);
 
     useEffect(() => {
         for (const validation in validations) {
@@ -34,6 +36,8 @@ export const useValidation = (value: string, validations: ValidationsInput) => {
                         setMaxLengthError(value.length > validationValue);
                     }
                     break;
+                case 'isEmail':
+                    setIsEmailError(!isEmail(value));
             }
         }
     }, [value]);
@@ -42,5 +46,6 @@ export const useValidation = (value: string, validations: ValidationsInput) => {
         isEmptyError,
         minLengthError,
         maxLengthError,
+        isEmailError,
     };
 };
